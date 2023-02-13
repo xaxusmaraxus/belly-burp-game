@@ -30,6 +30,7 @@ var is_swapping = false
 var is_waiting = false
 
 var matched_groups = 0
+var matched_colors: Array = []
 var combo: int = 0
 
 
@@ -196,8 +197,9 @@ func _on_Grid_waiting_started():
 		yield(wait_timer, "timeout")
 	
 	is_waiting = false
-	emit_signal("waiting_finished", combo)
+	emit_signal("waiting_finished", matched_colors.duplicate())
 	combo = 0
+	matched_colors.clear()
 	match_sound.pitch_scale = 1.0
 
 
@@ -219,6 +221,7 @@ func find_matches():
 							else:
 								matched_groups += 1
 								matched_index = matched_groups
+								matched_colors.append(current_color)
 							board[i][j].make_matched(matched_index)
 							board[i+1][j].make_matched(matched_index)
 							board[i+2][j].make_matched(matched_index)
@@ -233,6 +236,7 @@ func find_matches():
 							else:
 								matched_groups += 1
 								matched_index = matched_groups
+								matched_colors.append(current_color)
 							board[i][j].make_matched(matched_index)
 							board[i][j+1].make_matched(matched_index)
 							board[i][j+2].make_matched(matched_index)

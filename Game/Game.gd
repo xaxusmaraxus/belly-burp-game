@@ -48,10 +48,11 @@ func lose():
 
 # Connected signal
 func _on_Grid_waiting_started():
-	pass
+	print("This function gets triggered when the player has ended their move")
 
 
 # Connected signal
-func _on_Grid_waiting_finished(_total_combo):
-	pass
+func _on_Grid_waiting_finished(matched_colors):
+	print("This function gets triggered when the game has finished calculating the effects of the player's move")
+	print("Matched colors: %s" % str(matched_colors))
 
