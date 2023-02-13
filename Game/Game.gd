@@ -7,9 +7,6 @@ enum {
 }
 
 
-export (int) var power = 10
-var life: int = 10
-var level: int = 1
 var state = READY
 
 onready var ui = $UI
@@ -23,8 +20,6 @@ func _ready():
 	randomize()
 	grid.connect("waiting_started", self, "_on_Grid_waiting_started")
 	grid.connect("waiting_finished", self, "_on_Grid_waiting_finished")
-	ui.update_level(level)
-	ui.update_life(life)
 	end_screen.hide()
 	sign_screen.show()
 	sign_timer.start()
@@ -40,7 +35,7 @@ func _on_SignTimer_timeout():
 			sign_screen.hide()
 		GAMEOVER:
 			sign_screen.hide()
-			end_screen.show_result(level - 1)
+			end_screen.show_result(42)
 			end_screen.show()
 
 
