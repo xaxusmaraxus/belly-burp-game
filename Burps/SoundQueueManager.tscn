@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Burps/SoundQueueManager.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Sounds/Burps/breviceps.wav" type="AudioStream" id=2]
+[ext_resource path="res://Assets/Sounds/Burps/fablevision.wav" type="AudioStream" id=3]
+
+[node name="SoundQueueManager" type="Node"]
+script = ExtResource( 1 )
+sounds = [ ExtResource( 2 ), ExtResource( 3 ) ]
