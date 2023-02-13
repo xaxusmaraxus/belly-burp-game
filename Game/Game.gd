@@ -11,7 +11,6 @@ export (int) var power = 10
 var life: int = 10
 var level: int = 1
 var state = READY
-var enemy #Inherited Enemy node
 
 onready var ui = $UI
 onready var grid = $Grid
@@ -39,7 +38,6 @@ func _on_SignTimer_timeout():
 		PLAY:
 			sign_timer.stop()
 			sign_screen.hide()
-			# spawn_enemy()
 		GAMEOVER:
 			sign_screen.hide()
 			end_screen.show_result(level - 1)
@@ -56,12 +54,10 @@ func lose():
 
 # Connected signal
 func _on_Grid_waiting_started():
-	if enemy != null:
-		enemy.attack_timer.paused = true
+	pass
 
 
 # Connected signal
-func _on_Grid_waiting_finished(total_combo):
-	if enemy != null:
-		enemy.hit(power, total_combo)
+func _on_Grid_waiting_finished(_total_combo):
+	pass
 
