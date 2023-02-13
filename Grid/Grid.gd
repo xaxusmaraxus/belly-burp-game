@@ -1,7 +1,14 @@
 extends Area2D
 
+# TODO
+# * Add position information to match_sound event (to set panning)
+# * Add color/food information to match_sound event (to match burp to food)
+
 signal waiting_started
 signal waiting_finished(total_combo)
+signal move_sound
+signal match_sound(combo_number)
+signal release_sound
 
 const pieces_scn = [
 	preload("res://Pieces/PieceBeige.tscn"),
@@ -37,9 +44,6 @@ var combo: int = 0
 onready var pieces_container = $PiecesContainer
 onready var touch_timer = $TouchTimer
 onready var wait_timer = $WaitTimer
-onready var move_sound = $MoveSound
-onready var match_sound = $MatchSound
-onready var release_sound = $ReleaseSound
 
 func _ready():
 	randomize()
@@ -142,7 +146,7 @@ func release_piece():
 	moving_piece.disable_held()
 	is_touching = false
 	touch_timer.stop()
-	release_sound.play()
+	emit_signal("release_sound")
 	emit_signal("waiting_started")
 
 
@@ -161,7 +165,7 @@ func swap_pieces(collided_piece):
 		collided_piece.move(grid_to_pixel(last_pos.x, last_pos.y))
 		board[collided_pos.x][collided_pos.y] = moving_piece
 		last_pos = collided_pos
-		move_sound.play()
+		emit_signal("move_sound")
 
 
 func _on_Grid_area_exited(area):
@@ -184,7 +188,6 @@ func _on_Grid_waiting_started():
 		if matched_groups > 0:
 			for index in range(1, matched_groups + 1):
 				combo += 1
-				match_sound.pitch_scale += 0.25
 				delete_matches(index)
 				wait_timer.start()
 				yield(wait_timer, "timeout")
@@ -200,7 +203,6 @@ func _on_Grid_waiting_started():
 	emit_signal("waiting_finished", matched_colors.duplicate())
 	combo = 0
 	matched_colors.clear()
-	match_sound.pitch_scale = 1.0
 
 
 
@@ -245,6 +247,7 @@ func find_matches():
 
 func delete_matches(index):
 	print("start delete_matches")
+	# emit_signal("deleting_matches")  # TODO: emit this with color information; probably not right here
 	var combo_displayed = false
 	for i in width:
 		for j in height:
@@ -256,7 +259,7 @@ func delete_matches(index):
 							spawn_combo_count(board[i][j])
 						board[i][j].queue_free()
 						board[i][j] = null
-	match_sound.play()
+	emit_signal("match_sound", combo)
 	print("end delete_matches")
 
 

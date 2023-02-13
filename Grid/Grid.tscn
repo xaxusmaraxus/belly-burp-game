@@ -1,9 +1,6 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Grid/Grid.gd" type="Script" id=1]
-[ext_resource path="res://Assets/Sounds/move.wav" type="AudioStream" id=2]
-[ext_resource path="res://Assets/Sounds/match.wav" type="AudioStream" id=3]
-[ext_resource path="res://Assets/Sounds/release.wav" type="AudioStream" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 225, 190 )
@@ -24,16 +21,6 @@ one_shot = true
 [node name="WaitTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
-
-[node name="MoveSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 2 )
-
-[node name="MatchSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 3 )
-
-[node name="ReleaseSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 4 )
-pitch_scale = 0.8
 
 [connection signal="area_exited" from="." to="." method="_on_Grid_area_exited"]
 [connection signal="waiting_started" from="." to="." method="_on_Grid_waiting_started"]
