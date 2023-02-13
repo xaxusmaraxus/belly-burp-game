@@ -9,7 +9,6 @@ enum {
 
 var state = READY
 
-onready var ui = $UI
 onready var grid = $Grid
 onready var sign_screen = $Screens/SignScreen
 onready var end_screen = $Screens/EndScreen
