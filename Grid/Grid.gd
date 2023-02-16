@@ -42,7 +42,6 @@ var combo: int = 0
 
 
 onready var pieces_container = $PiecesContainer
-onready var touch_timer = $TouchTimer
 onready var wait_timer = $WaitTimer
 
 func _ready():
@@ -134,7 +133,6 @@ func touch_piece():
 		moving_piece = board[last_pos.x][last_pos.y]
 		is_touching = true
 		moving_piece.enable_held()
-		touch_timer.start()
 
 
 func release_piece():
@@ -145,7 +143,6 @@ func release_piece():
 				break
 	moving_piece.disable_held()
 	is_touching = false
-	touch_timer.stop()
 	emit_signal("release_sound")
 	emit_signal("waiting_started")
 

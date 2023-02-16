@@ -14,14 +14,9 @@ shape = SubResource( 1 )
 
 [node name="PiecesContainer" type="Node2D" parent="."]
 
-[node name="TouchTimer" type="Timer" parent="."]
-wait_time = 5.0
-one_shot = true
-
 [node name="WaitTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
 
 [connection signal="area_exited" from="." to="." method="_on_Grid_area_exited"]
 [connection signal="waiting_started" from="." to="." method="_on_Grid_waiting_started"]
-[connection signal="timeout" from="TouchTimer" to="." method="_on_TouchTimer_timeout"]
