@@ -22,9 +22,9 @@ const combo_obj_scn = preload("res://Signs/Combo.tscn")
 
 var width: = 7
 var height: = 6
-var x_start: = 5
-var y_start: = 1100
-var grid_size: = 90
+var x_start: = 30
+var y_start: = 1070
+var grid_size: = 95
 var y_offset: = 3
 
 var board = []

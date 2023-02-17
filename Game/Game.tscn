@@ -46,13 +46,14 @@ visible = false
 [node name="SignTimer" type="Timer" parent="Screens"]
 
 [node name="CafeBG" type="TextureRect" parent="."]
-margin_right = 629.0
-margin_bottom = 455.0
+margin_top = -53.0
+margin_right = 719.0
+margin_bottom = 400.0
 texture = ExtResource( 3 )
 expand = true
 
-[node name="Node2D" parent="." instance=ExtResource( 5 )]
-position = Vector2( 456, 267 )
+[node name="Bear" parent="." instance=ExtResource( 5 )]
+position = Vector2( 596, 246 )
 
 [connection signal="match_sound" from="Grid" to="SoundPlayer" method="_on_Grid_match_sound"]
 [connection signal="move_sound" from="Grid" to="SoundPlayer" method="_on_Grid_move_sound"]
