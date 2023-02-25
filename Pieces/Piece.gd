@@ -34,13 +34,13 @@ func make_matched(index):
 
 func enable_held():
 	held = true
-	sprite.scale = Vector2(1.25, 1.25)
+	sprite.scale = Vector2(1.5, 1.5)
 	collision_shape.position = Vector2(43.75, -43.75)
 
 
 func disable_held():
 	held = false
-	sprite.scale = Vector2(1, 1)
+	sprite.scale = Vector2(1.3, 1.3)
 	collision_shape.position = Vector2(35, -35)
 
 
