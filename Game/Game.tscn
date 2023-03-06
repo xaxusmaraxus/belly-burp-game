@@ -51,10 +51,13 @@ visible = false
 
 [node name="SignTimer" type="Timer" parent="Screens"]
 
-[node name="CafeBG" type="TextureRect" parent="."]
-margin_top = -53.0
+[node name="CafeBG_Node" type="Node2D" parent="."]
+position = Vector2( 0, -53 )
+z_index = -1
+
+[node name="CafeBG" type="TextureRect" parent="CafeBG_Node"]
 margin_right = 719.0
-margin_bottom = 400.0
+margin_bottom = 453.0
 texture = ExtResource( 3 )
 expand = true
 

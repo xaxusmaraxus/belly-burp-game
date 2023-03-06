@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Pieces/Projectile.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Aliens/alienBeige_round.png" type="Texture" id=2]
+
+[node name="Projectile" type="Node2D"]
+
+[node name="KinematicBody2D" type="KinematicBody2D" parent="."]
+script = ExtResource( 1 )
+
+[node name="projectile" type="Sprite" parent="KinematicBody2D"]
+position = Vector2( 6.125, 2.625 )
+scale = Vector2( 2.31071, 2.325 )
+texture = ExtResource( 2 )

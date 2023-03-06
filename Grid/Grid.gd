@@ -39,7 +39,7 @@ var is_waiting = false
 var matched_groups = 0
 var matched_colors: Array = []
 var combo: int = 0
-
+var shoot_pixels
 
 onready var pieces_container = $PiecesContainer
 onready var wait_timer = $WaitTimer
@@ -49,6 +49,7 @@ func _ready():
 	board = make_2d_array()
 	spawn_pieces()
 	is_initializing = false
+	
 
 
 func make_2d_array() -> Array:
@@ -78,6 +79,7 @@ func spawn_pieces():
 				piece.move(grid_to_pixel(i, j))
 				board[i][j] = piece
 	print("end spawn_pieces")
+	
 
 
 func match_at(column, row, color):
@@ -221,6 +223,9 @@ func find_matches():
 								matched_groups += 1
 								matched_index = matched_groups
 								matched_colors.append(current_color)
+							shoot_pixels = grid_to_pixel(i+1, j) #shooting the matches upwards, telling the position
+							shoot(shoot_pixels) #shooting the matches upwards
+							print("2", current_color)
 							board[i][j].make_matched(matched_index)
 							board[i+1][j].make_matched(matched_index)
 							board[i+2][j].make_matched(matched_index)
@@ -236,10 +241,22 @@ func find_matches():
 								matched_groups += 1
 								matched_index = matched_groups
 								matched_colors.append(current_color)
+							shoot_pixels = grid_to_pixel(i, j+1) #shooting the matches upwards, telling the position
+							shoot(shoot_pixels) #shooting the matches upwards
+							print("1", current_color)
 							board[i][j].make_matched(matched_index)
 							board[i][j+1].make_matched(matched_index)
 							board[i][j+2].make_matched(matched_index)
 	print("end find_matches")
+
+#shooting the matches upwards function
+
+func shoot(i_j_pix):
+	var projectile = load("res://Pieces/Projectile.tscn") #what is to be shot
+	var bullet = projectile.instance() #instancing var
+	add_child(bullet) #actual child added
+	print("shooting ", i_j_pix) #just to check the coordinates in pixels
+	bullet.position = i_j_pix #telling godot the position of the sprite placement
 
 
 func delete_matches(index):

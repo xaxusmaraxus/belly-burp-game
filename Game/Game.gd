@@ -22,7 +22,14 @@ func _ready():
 	end_screen.hide()
 	sign_screen.show()
 	sign_timer.start()
+#	
 
+#func shoot():
+#	var projectile = load("res://Pieces/Projectile.tscn")
+#	var bullet = projectile.instance()
+#	add_child(bullet)
+#	print("shooting ", bullet)
+#	bullet.position = Vector2(360, 750)
 
 func _on_SignTimer_timeout():
 	match state:
@@ -55,4 +62,5 @@ func _on_Grid_waiting_started():
 func _on_Grid_waiting_finished(matched_colors):
 	print("This function gets triggered when the game has finished calculating the effects of the player's move")
 	print("Matched colors: %s" % str(matched_colors))
+#	shoot()
 
