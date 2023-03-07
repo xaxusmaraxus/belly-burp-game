@@ -40,6 +40,8 @@ var matched_groups = 0
 var matched_colors: Array = []
 var combo: int = 0
 var shoot_pixels
+var sound = 0
+var randomsound = RandomNumberGenerator.new()
 
 onready var pieces_container = $PiecesContainer
 onready var wait_timer = $WaitTimer
@@ -49,7 +51,7 @@ func _ready():
 	board = make_2d_array()
 	spawn_pieces()
 	is_initializing = false
-	
+
 
 
 func make_2d_array() -> Array:
@@ -223,9 +225,9 @@ func find_matches():
 								matched_groups += 1
 								matched_index = matched_groups
 								matched_colors.append(current_color)
-							shoot_pixels = grid_to_pixel(i+1, j) #shooting the matches upwards, telling the position
-							shoot(shoot_pixels) #shooting the matches upwards
-							print("2", current_color)
+							shoot_pixels = grid_to_pixel(i+1, j) #shooting the matches upwards, shooting where the match is version
+#							shoot_pixels = Vector2(100,100) #dropdown version
+							shoot(shoot_pixels, current_color) #shooting the matches upwards, passing the position of the match and it's color
 							board[i][j].make_matched(matched_index)
 							board[i+1][j].make_matched(matched_index)
 							board[i+2][j].make_matched(matched_index)
@@ -241,9 +243,9 @@ func find_matches():
 								matched_groups += 1
 								matched_index = matched_groups
 								matched_colors.append(current_color)
-							shoot_pixels = grid_to_pixel(i, j+1) #shooting the matches upwards, telling the position
-							shoot(shoot_pixels) #shooting the matches upwards
-							print("1", current_color)
+							shoot_pixels = grid_to_pixel(i, j+1) #shooting the matches upwards, shooting where the match is version
+#							shoot_pixels = Vector2(100,100) #dropdown version
+							shoot(shoot_pixels, current_color) #shooting the matches upwards, passing the position of the match and it's color
 							board[i][j].make_matched(matched_index)
 							board[i][j+1].make_matched(matched_index)
 							board[i][j+2].make_matched(matched_index)
@@ -251,11 +253,12 @@ func find_matches():
 
 #shooting the matches upwards function
 
-func shoot(i_j_pix):
-	var projectile = load("res://Pieces/Projectile.tscn") #what is to be shot
+func shoot(i_j_pix, color):
+	var projectile = load("res://Pieces/Projectile"+color+".tscn") #what is to be shot
 	var bullet = projectile.instance() #instancing var
 	add_child(bullet) #actual child added
-	print("shooting ", i_j_pix) #just to check the coordinates in pixels
+#	print("shooting ", i_j_pix) #just to check the coordinates in pixels
+#	print("double check if color has passed ", projectile)
 	bullet.position = i_j_pix #telling godot the position of the sprite placement
 
 
@@ -273,9 +276,15 @@ func delete_matches(index):
 							spawn_combo_count(board[i][j])
 						board[i][j].queue_free()
 						board[i][j] = null
-	emit_signal("match_sound", combo)
+#	emit_signal("match_sound", combo)
+	play_sound()
 	print("end delete_matches")
 
+func play_sound():
+	var val = randomsound.randi_range(1,5)
+	var snd = get_node("../TEMP_SOUNDS/s"+str(val))
+	snd.play()
+	yield(snd, "finished")
 
 func spawn_combo_count(first_piece):
 	var combo_obj = combo_obj_scn.instance()
