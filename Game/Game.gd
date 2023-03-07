@@ -15,6 +15,11 @@ onready var end_screen = $Screens/EndScreen
 onready var sign_timer = $Screens/SignTimer
 
 
+signal belt_detector
+signal time_to_eat
+signal ready_to_delete
+
+
 func _ready():
 	randomize()
 	grid.connect("waiting_started", self, "_on_Grid_waiting_started")
@@ -22,7 +27,14 @@ func _ready():
 	end_screen.hide()
 	sign_screen.show()
 	sign_timer.start()
+#	
 
+#func shoot():
+#	var projectile = load("res://Pieces/Projectile.tscn")
+#	var bullet = projectile.instance()
+#	add_child(bullet)
+#	print("shooting ", bullet)
+#	bullet.position = Vector2(360, 750)
 
 func _on_SignTimer_timeout():
 	match state:
@@ -55,4 +67,18 @@ func _on_Grid_waiting_started():
 func _on_Grid_waiting_finished(matched_colors):
 	print("This function gets triggered when the game has finished calculating the effects of the player's move")
 	print("Matched colors: %s" % str(matched_colors))
+#	shoot()
 
+#func _on_BeltDetector_body_entered(body): #signal for projecticle to pick up when the item has entered the conveyor belt
+#	var belt_entered = true
+#	emit_signal("belt_detector", belt_entered)
+
+
+#func _on_EatingDetector_body_entered(body):
+#	emit_signal("time_to_eat")
+#
+#
+#func _on_Ready_to_delete_body_entered(body):
+#	var deletable = true
+#	emit_signal("ready_to_delete", deletable)
+#	pass # Replace with function body.

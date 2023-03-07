@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Pieces/Projectile.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Aliens/alienBeige_round.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Sounds/Eating/chewing_carrot.wav" type="AudioStream" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 37, 28.75 )
+
+[node name="Projectile" type="Node2D"]
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+mass = 8.0
+gravity_scale = 2.0
+contact_monitor = true
+linear_velocity = Vector2( 0, -500 )
+angular_velocity = 5.0
+applied_force = Vector2( 0, -10 )
+script = ExtResource( 1 )
+velocity = Vector2( 100, 10 )
+
+[node name="projectile" type="Sprite" parent="RigidBody2D"]
+position = Vector2( 6.125, 2.625 )
+scale = Vector2( 1.5, 1.5 )
+z_index = 1
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+position = Vector2( 5, 12 )
+shape = SubResource( 1 )
+
+[node name="scaling" type="Tween" parent="RigidBody2D"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+
+[connection signal="tween_completed" from="RigidBody2D/scaling" to="RigidBody2D" method="_on_scaling_tween_completed"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://Grid/Grid.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Burps/SoundPlayer.tscn" type="PackedScene" id=2]
@@ -7,13 +7,36 @@
 [ext_resource path="res://Bear/Bear.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Utility/watermark.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Assets/Fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://Game/Plate.gd" type="Script" id=8]
 [ext_resource path="res://Game/Game.gd" type="Script" id=9]
 [ext_resource path="res://UI/EndScreen.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Assets/Graphics/plate_atlas.tres" type="Texture" id=11]
+[ext_resource path="res://Assets/Graphics/darm.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Sounds/Appetite/3.wav" type="AudioStream" id=13]
+[ext_resource path="res://Assets/Sounds/Appetite/2.mp3" type="AudioStream" id=14]
+[ext_resource path="res://Assets/Sounds/Appetite/5.mp3" type="AudioStream" id=15]
+[ext_resource path="res://Assets/Sounds/Appetite/1.wav" type="AudioStream" id=16]
+[ext_resource path="res://Assets/Sounds/Appetite/4.mp3" type="AudioStream" id=17]
 
 [sub_resource type="DynamicFont" id=4]
 size = 100
 outline_size = 5
 font_data = ExtResource( 4 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 341.5, 17.25 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 5.5, 205.75 )
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 343.75, 6.625 )
+
+[sub_resource type="RectangleShape2D" id=9]
+extents = Vector2( 11.25, 48.625 )
+
+[sub_resource type="RectangleShape2D" id=10]
+extents = Vector2( 10, 50.5 )
 
 [sub_resource type="DynamicFont" id=5]
 outline_size = 1
@@ -51,21 +74,91 @@ visible = false
 
 [node name="SignTimer" type="Timer" parent="Screens"]
 
-[node name="CafeBG" type="TextureRect" parent="."]
-margin_top = -53.0
+[node name="CafeBG_Node" type="Node2D" parent="."]
+position = Vector2( 0, -53 )
+z_index = -1
+
+[node name="CafeBG" type="TextureRect" parent="CafeBG_Node"]
 margin_right = 719.0
-margin_bottom = 400.0
+margin_bottom = 453.0
 texture = ExtResource( 3 )
 expand = true
 
 [node name="Bear" parent="." instance=ExtResource( 5 )]
 position = Vector2( 596, 246 )
 
+[node name="Plate" type="StaticBody2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Sprite" type="Sprite" parent="Plate"]
+position = Vector2( 354.983, 363.854 )
+scale = Vector2( 0.222503, 0.170981 )
+texture = ExtResource( 11 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 356, 382 )
+shape = SubResource( 6 )
+one_way_collision = true
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 709, 192 )
+shape = SubResource( 7 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 6, 194 )
+shape = SubResource( 7 )
+
+[node name="BeltDetector" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BeltDetector"]
+position = Vector2( 356, 336 )
+shape = SubResource( 8 )
+
+[node name="EatingDetector" type="Area2D" parent="."]
+visible = false
+
+[node name="eating_area" type="CollisionShape2D" parent="EatingDetector"]
+position = Vector2( 565.75, 301.625 )
+shape = SubResource( 9 )
+
+[node name="Ready_to_delete" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ready_to_delete"]
+position = Vector2( 510, 303 )
+shape = SubResource( 10 )
+
 [node name="Watermark" parent="." instance=ExtResource( 6 )]
 custom_fonts/font = SubResource( 5 )
 label_file = "res://build_info.txt"
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 506.125, 53 )
+scale = Vector2( 0.7725, 0.693333 )
+texture = ExtResource( 12 )
+
+[node name="TEMP_SOUNDS" type="Node" parent="."]
+
+[node name="s1" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 16 )
+
+[node name="s2" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 14 )
+
+[node name="s3" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 13 )
+
+[node name="s4" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 17 )
+
+[node name="s5" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 15 )
 
 [connection signal="match_sound" from="Grid" to="SoundPlayer" method="_on_Grid_match_sound"]
 [connection signal="move_sound" from="Grid" to="SoundPlayer" method="_on_Grid_move_sound"]
 [connection signal="release_sound" from="Grid" to="SoundPlayer" method="_on_Grid_release_sound"]
 [connection signal="timeout" from="Screens/SignTimer" to="." method="_on_SignTimer_timeout"]
+[connection signal="body_entered" from="BeltDetector" to="." method="_on_BeltDetector_body_entered"]
+[connection signal="body_entered" from="EatingDetector" to="." method="_on_EatingDetector_body_entered"]
+[connection signal="body_entered" from="Ready_to_delete" to="." method="_on_Ready_to_delete_body_entered"]
