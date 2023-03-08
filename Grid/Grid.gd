@@ -9,6 +9,7 @@ signal waiting_finished(total_combo)
 signal move_sound
 signal match_sound(combo_number)
 signal release_sound
+signal shoot_pixels
 
 const pieces_scn = [
 	preload("res://Pieces/PieceBeige.tscn"),
@@ -277,6 +278,7 @@ func delete_matches(index):
 						if combo_displayed == false:
 							combo_displayed = true
 							spawn_combo_count(board[i][j])
+						emit_signal("shoot_pixels")
 						board[i][j].queue_free()
 						board[i][j] = null
 #	emit_signal("match_sound", combo)

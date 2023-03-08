@@ -29,7 +29,15 @@ func move(destination):
 func make_matched(index):
 	matched = true
 	matched_index = index
-	sprite.texture = square_face
+#	sprite.texture = square_face
+	var shoot_pixels = get_tree().get_root().find_node("Grid", true, false) #signal from "Game" node
+	shoot_pixels.connect("shoot_pixels", self, "match_move")
+	
+func match_move(pixels):
+	tween.interpolate_property(sprite, "scale", Vector2(1, 1), Vector2(.1, .1), 0.5, Tween.TRANS_EXPO, Tween.EASE_IN)
+	tween.start()
+	print("ITS HAPPENING")
+#	sprite.global_position = shoot_pixels
 
 
 func enable_held():
