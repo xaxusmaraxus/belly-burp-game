@@ -5,6 +5,7 @@ export var speed = 100
 export var gravity = 10
 onready var scaling = $scaling
 var deletable
+var fill_value
 
 #export var angle = 270 #upwards
 
@@ -36,12 +37,15 @@ func eat():
 	print("EATEATEAT")
 	$"../AudioStreamPlayer".play()
 	queue_free()
+	var darm_node = get_tree().get_root().find_node("TextureProgress", true, false) #signal from "Game" node
+	darm_node.value += 10
+#	fill_value += 1
+#	emit_signal("darm", fill_value)
 
 func _on_scaling_tween_completed(object, key):
 	if $projectile.scale == Vector2(3, 3):
 		scaling.interpolate_property($projectile, "scale", Vector2(3, 3), Vector2(1.5, 1.5), 1, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT, 0)
 		scaling.start()
-	else:
-		print("no workey")
+
 	pass # Replace with function body.
 	

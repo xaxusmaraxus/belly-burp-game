@@ -13,6 +13,7 @@ func _ready():
 
 func _process(delta):
 	$Sprite.texture.region.position.x -= speed_plate * delta * 5
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

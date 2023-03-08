@@ -52,8 +52,6 @@ func _ready():
 	spawn_pieces()
 	is_initializing = false
 
-
-
 func make_2d_array() -> Array:
 	var array = []
 	for i in width:
@@ -118,6 +116,11 @@ func is_in_grid(grid_position: Vector2) -> bool:
 
 
 func _process(_delta):
+	if $"../Darm/TextureProgress".value == 100:
+		print("BUUUURP")
+		$"../Burp_sound".play()
+		$"../Darm/TextureProgress".value = 0
+
 	if not is_waiting:
 		touch_input()
 
@@ -284,7 +287,7 @@ func play_sound():
 	var val = randomsound.randi_range(1,5)
 	var snd = get_node("../TEMP_SOUNDS/s"+str(val))
 	snd.play()
-	yield(snd, "finished")
+#	yield(snd, "finished")
 
 func spawn_combo_count(first_piece):
 	var combo_obj = combo_obj_scn.instance()
