@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "SmoothPath",
+"language": "GDScript",
+"path": "res://smooth_path_modified.gd"
+}, {
 "base": "Node",
 "class": "SoundQueueManager",
 "language": "GDScript",
 "path": "res://Burps/SoundQueueManager.gd"
 } ]
 _global_script_class_icons={
+"SmoothPath": "",
 "SoundQueueManager": ""
 }
 
@@ -34,6 +40,10 @@ window/dpi/allow_hidpi=true
 window/handheld/orientation="portrait"
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/water2d/plugin.cfg" )
 
 [input]
 

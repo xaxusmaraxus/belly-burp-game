@@ -8,7 +8,7 @@ export var speed_plate = 100
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	constant_linear_velocity.x = speed_plate #moving the conveyor belt
+#	constant_linear_velocity.x = speed_plate #moving the conveyor belt
 	pass # Replace with function body.
 
 func _process(delta):

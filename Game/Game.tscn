@@ -18,6 +18,8 @@
 [ext_resource path="res://Assets/Sounds/Appetite/1.wav" type="AudioStream" id=16]
 [ext_resource path="res://Assets/Sounds/Appetite/4.mp3" type="AudioStream" id=17]
 [ext_resource path="res://Assets/Sounds/Burps/fablevision.wav" type="AudioStream" id=18]
+[ext_resource path="res://Assets/Graphics/magnifying_glass.png" type="Texture" id=19]
+[ext_resource path="res://Assets/Graphics/stomach_collision.png" type="Texture" id=20]
 
 [sub_resource type="DynamicFont" id=4]
 size = 100
@@ -30,18 +32,12 @@ extents = Vector2( 341.5, 17.25 )
 [sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 5.5, 205.75 )
 
-[sub_resource type="RectangleShape2D" id=8]
-extents = Vector2( 343.75, 6.625 )
-
-[sub_resource type="RectangleShape2D" id=9]
-extents = Vector2( 11.25, 48.625 )
-
-[sub_resource type="RectangleShape2D" id=10]
-extents = Vector2( 10, 50.5 )
-
 [sub_resource type="DynamicFont" id=5]
 outline_size = 1
 font_data = ExtResource( 7 )
+
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 33.5, 14 )
 
 [node name="Game" type="Node2D"]
 position = Vector2( -1, 0 )
@@ -80,24 +76,28 @@ position = Vector2( 0, -53 )
 z_index = -1
 
 [node name="CafeBG" type="TextureRect" parent="CafeBG_Node"]
-margin_right = 719.0
-margin_bottom = 453.0
+margin_left = 3.0
+margin_top = 55.0
+margin_right = 722.0
+margin_bottom = 508.0
 texture = ExtResource( 3 )
 expand = true
 
 [node name="Bear" parent="." instance=ExtResource( 5 )]
-position = Vector2( 596, 246 )
+position = Vector2( 575, 269 )
+scale = Vector2( 1.2, 1.2 )
 
 [node name="Plate" type="StaticBody2D" parent="."]
+visible = false
 script = ExtResource( 8 )
 
 [node name="Sprite" type="Sprite" parent="Plate"]
-position = Vector2( 354.983, 363.854 )
+position = Vector2( 354, 350 )
 scale = Vector2( 0.222503, 0.170981 )
 texture = ExtResource( 11 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Plate"]
-position = Vector2( 356, 382 )
+position = Vector2( 356, 386 )
 shape = SubResource( 6 )
 one_way_collision = true
 
@@ -108,27 +108,6 @@ shape = SubResource( 7 )
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Plate"]
 position = Vector2( 6, 194 )
 shape = SubResource( 7 )
-
-[node name="BeltDetector" type="Area2D" parent="."]
-visible = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BeltDetector"]
-position = Vector2( 356, 336 )
-shape = SubResource( 8 )
-
-[node name="EatingDetector" type="Area2D" parent="."]
-visible = false
-
-[node name="eating_area" type="CollisionShape2D" parent="EatingDetector"]
-position = Vector2( 565.75, 301.625 )
-shape = SubResource( 9 )
-
-[node name="Ready_to_delete" type="Area2D" parent="."]
-visible = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ready_to_delete"]
-position = Vector2( 510, 303 )
-shape = SubResource( 10 )
 
 [node name="Watermark" parent="." instance=ExtResource( 6 )]
 custom_fonts/font = SubResource( 5 )
@@ -155,8 +134,10 @@ stream = ExtResource( 15 )
 z_index = 2
 
 [node name="TextureProgress" type="TextureProgress" parent="Darm"]
-margin_right = 500.0
-margin_bottom = 150.0
+margin_left = 91.0
+margin_top = 1316.0
+margin_right = 591.0
+margin_bottom = 1466.0
 texture_under = ExtResource( 12 )
 texture_progress = ExtResource( 12 )
 fill_mode = 1
@@ -165,10 +146,38 @@ tint_progress = Color( 0.792157, 0, 0, 1 )
 [node name="Burp_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 18 )
 
+[node name="MagnifyingGlass" type="Sprite" parent="."]
+position = Vector2( 238, 309 )
+rotation = 0.472553
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 19 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2( 194, 251 )
+scale = Vector2( 0.45, 0.45 )
+polygon = PoolVector2Array( -62, -229.1, -62, -219, -67.6, -219, -119, -195.7, -119, -194.9, -148, -175, -148, -174.1, -173, -150.2, -173, -148.2, -184, -136.1, -184, -134.4, -205, -101.4, -205, -98.6, -218, -68.7, -218, -64.7, -225, -39, -225, -31.9, -228, -9.7, -228, 8, -227.1, 20, -226.2, 20, -222.2, 50, -221.4, 50, -215.5, 74, -214.6, 74, -202.6, 104, -201.9, 104, -184.9, 133, -184.1, 133, -149.1, 172, -147.2, 172, -135.1, 183, -133.4, 183, -106.4, 201, -104.6, 201, -60.4, 219, -56.8, 219, -8.7, 227, 8.8, 227, 36, 224.2, 36, 223.3, 59, 219.3, 59, 218.5, 88, 209.5, 88, 208.8, 134, 183.7, 134, 183.1, 173, 148.1, 173, 146.2, 184, 134.1, 184, 132.4, 202, 105.3, 202, 103.6, 220, 59.4, 220, 55.8, 228, 7.7, 228, -10, 222.2, -52, 221.5, -52, 210.5, -89, 209.8, -89, 184.7, -135, 184.1, -135, 160.1, -164, 158.2, -164, 139.1, -182, 137.3, -182, 115.3, -198, 113.5, -198, 89.4, -211, 86.7, -211, 62, -219.6, 62, -221.4, 59.7, -224.9, 60.8, -227, 61.6, -227, 63.6, -233, 69.4, -233, 117, -213.3, 117, -212.1, 153, -189.1, 153, -187.9, 185, -157.9, 185, -155.7, 207, -127.7, 207, -125.6, 225, -92.5, 225, -89.3, 237, -54.3, 237, -49.4, 239, -40.3, 239, 39.1, 236.8, 56, 235.5, 56, 224.5, 94, 223.2, 94, 209.3, 124, 208.1, 124, 189.1, 153, 187.8, 153, 151.8, 190, 149.7, 190, 127.7, 207, 125.6, 207, 92.5, 225, 89.4, 225, 62.4, 235, 58.4, 235, 40.3, 239, -40, 239, -71, 232.7, -71, 231.5, -103, 220.4, -103, 219.2, -129, 206.2, -129, 205, -159, 184, -159, 182.8, -185, 157.9, -185, 155.7, -207, 127.7, -207, 125.5, -221, 101.5, -221, 98.3, -233, 69.4, -233, 65, -239, 39.7, -239, -42.7, -236.7, -56, -235.5, -56, -227.5, -86, -226.3, -86, -213.3, -117, -212.1, -117, -198.1, -141, -197, -141, -173, -171, -171.8, -171, -151.8, -190, -149.7, -190, -122.7, -210, -120.5, -210, -92.5, -225, -89.4, -225, -71, -231.4, -71, -232.2, -69, -233.3 )
+
+[node name="Stomach_detector" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stomach_detector"]
+position = Vector2( 546, 298 )
+shape = SubResource( 11 )
+
+[node name="Timer" type="Timer" parent="Stomach_detector"]
+wait_time = 0.5
+one_shot = true
+
+[node name="StomachCollision" type="Sprite" parent="Stomach_detector"]
+visible = false
+position = Vector2( 194, 251 )
+scale = Vector2( 0.586297, 0.586297 )
+texture = ExtResource( 20 )
+
+[node name="scaling" type="Tween" parent="."]
+
 [connection signal="match_sound" from="Grid" to="SoundPlayer" method="_on_Grid_match_sound"]
 [connection signal="move_sound" from="Grid" to="SoundPlayer" method="_on_Grid_move_sound"]
 [connection signal="release_sound" from="Grid" to="SoundPlayer" method="_on_Grid_release_sound"]
 [connection signal="timeout" from="Screens/SignTimer" to="." method="_on_SignTimer_timeout"]
-[connection signal="body_entered" from="BeltDetector" to="." method="_on_BeltDetector_body_entered"]
-[connection signal="body_entered" from="EatingDetector" to="." method="_on_EatingDetector_body_entered"]
-[connection signal="body_entered" from="Ready_to_delete" to="." method="_on_Ready_to_delete_body_entered"]
+[connection signal="body_entered" from="Stomach_detector" to="Grid" method="_on_Stomach_detector_body_entered"]
+[connection signal="timeout" from="Stomach_detector/Timer" to="Grid" method="_on_Timer_timeout"]

@@ -10,6 +10,7 @@ signal move_sound
 signal match_sound(combo_number)
 signal release_sound
 signal shoot_pixels
+signal color_info(color)
 
 const pieces_scn = [
 	preload("res://Pieces/PieceBeige.tscn"),
@@ -43,6 +44,7 @@ var combo: int = 0
 var shoot_pixels
 var sound = 0
 var randomsound = RandomNumberGenerator.new()
+var color_info
 
 onready var pieces_container = $PiecesContainer
 onready var wait_timer = $WaitTimer
@@ -229,9 +231,9 @@ func find_matches():
 								matched_groups += 1
 								matched_index = matched_groups
 								matched_colors.append(current_color)
-							shoot_pixels = grid_to_pixel(i+1, j) #shooting the matches upwards, shooting where the match is version
-#							shoot_pixels = Vector2(100,100) #dropdown version
-							shoot(shoot_pixels, current_color) #shooting the matches upwards, passing the position of the match and it's color
+#							shoot_pixels = grid_to_pixel(i+1, j) #shooting the matches upwards, shooting where the match is version
+							shoot_pixels = Vector2(550,50) #dropdown version
+							shoot(shoot_pixels, current_color, scale) #shooting the matches upwards, passing the position of the match and it's color
 							board[i][j].make_matched(matched_index)
 							board[i+1][j].make_matched(matched_index)
 							board[i+2][j].make_matched(matched_index)
@@ -247,9 +249,9 @@ func find_matches():
 								matched_groups += 1
 								matched_index = matched_groups
 								matched_colors.append(current_color)
-							shoot_pixels = grid_to_pixel(i, j+1) #shooting the matches upwards, shooting where the match is version
-#							shoot_pixels = Vector2(100,100) #dropdown version
-							shoot(shoot_pixels, current_color) #shooting the matches upwards, passing the position of the match and it's color
+#							shoot_pixels = grid_to_pixel(i, j+1) #shooting the matches upwards, shooting where the match is version
+							shoot_pixels = Vector2(550,50) #dropdown version
+							shoot(shoot_pixels, current_color, scale) #shooting the matches upwards, passing the position of the match and it's color
 							board[i][j].make_matched(matched_index)
 							board[i][j+1].make_matched(matched_index)
 							board[i][j+2].make_matched(matched_index)
@@ -257,13 +259,23 @@ func find_matches():
 
 #shooting the matches upwards function
 
-func shoot(i_j_pix, color):
-	var projectile = load("res://Pieces/Projectile"+color+".tscn") #what is to be shot
-	var bullet = projectile.instance() #instancing var
-	add_child(bullet) #actual child added
-#	print("shooting ", i_j_pix) #just to check the coordinates in pixels
-#	print("double check if color has passed ", projectile)
-	bullet.position = i_j_pix #telling godot the position of the sprite placement
+func shoot(i_j_pix, color, scale):
+	if color == null:
+		print("no shootery")
+	else:
+		var projectile = load("res://Pieces/Projectile"+color+".tscn") #what is to be shot
+		var bullet = projectile.instance() #instancing var
+		add_child(bullet) #actual child added
+	##	print("shooting ", i_j_pix) #just to check the coordinates in pixels
+	##	print("double check if color has passed ", projectile)
+		print(scale)
+		bullet.scale = scale
+		bullet.position = i_j_pix #telling godot the position of the sprite placement
+		
+		emit_signal("color_info", projectile)
+		color_info = color
+	
+	
 
 
 func delete_matches(index):
@@ -324,3 +336,15 @@ func check_matches() -> bool:
 	return false
 
 
+
+
+func _on_Stomach_detector_body_entered(body):
+	$"../Stomach_detector/Timer".start()
+	pass # Replace with function body.
+
+
+func _on_Timer_timeout():
+	var stomach_opening = Vector2(200, 180)
+	var scale = Vector2(0.2, 0.2)
+	shoot(stomach_opening, color_info, scale)
+	pass # Replace with function body.

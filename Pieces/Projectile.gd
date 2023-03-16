@@ -17,13 +17,13 @@ func _ready():
 #	eating.connect("time_to_eat", self, "eat")  #problem: not only sent to current instance, but to all instances, that's why all will get affected
 #	var ready_to_delete = get_tree().get_root().find_node("Game", true, false)
 #	ready_to_delete.connect("ready_to_delete", self, "set_delete") 
-	scaling.interpolate_property($projectile, "scale", Vector2(1.5, 1.5), Vector2(3, 3), 1, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT, 0)
-	scaling.start()
+#	scaling.interpolate_property($projectile, "scale", Vector2(1.5, 1.5), Vector2(3, 3), 1, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT, 0)
+#	scaling.start()
 	pass
 
 
 func _physics_process(delta):
-	if global_position.x >= 500 && global_position.y <= 370:
+	if global_position.y >= 285 && global_position.x >= 300:
 		eat()
 	pass
 #
@@ -48,4 +48,13 @@ func _on_scaling_tween_completed(object, key):
 		scaling.start()
 
 	pass # Replace with function body.
+	
+func fill_stomach(color):
+#	var projectile = load("res://Pieces/Projectile"+color+".tscn") #what is to be shot
+#	var bullet = projectile.instance() #instancing var
+#	add_child(bullet) #actual child added
+#	print("shooting ", i_j_pix) #just to check the coordinates in pixels
+	print("double check if color has passed ", color)
+#	bullet.position = Vector2(100, 100) #telling godot the position of the sprite placement
+
 	
