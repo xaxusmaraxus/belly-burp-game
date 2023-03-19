@@ -127,8 +127,8 @@ func _process(_delta):
 #		$"../Darm/TextureProgress".value = 0
 	if belch_size == 5:
 		for n in belch_size:
-#			emit_signal("match_sound", n)
-			$"../Burp_sound".play()
+			emit_signal("match_sound", n)
+#			$"../Burp_sound".play()
 			print(n)
 			n -= 1
 	if not is_waiting:
