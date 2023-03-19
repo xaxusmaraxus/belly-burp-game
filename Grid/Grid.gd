@@ -45,6 +45,7 @@ var shoot_pixels
 var sound = 0
 var randomsound = RandomNumberGenerator.new()
 var color_info
+var scale_shoot
 
 onready var pieces_container = $PiecesContainer
 onready var wait_timer = $WaitTimer
@@ -155,6 +156,7 @@ func release_piece():
 	is_touching = false
 	emit_signal("release_sound")
 	emit_signal("waiting_started")
+	acid_reflux() #hook acid reflux here
 
 
 # connected signal
@@ -233,7 +235,8 @@ func find_matches():
 								matched_colors.append(current_color)
 #							shoot_pixels = grid_to_pixel(i+1, j) #shooting the matches upwards, shooting where the match is version
 							shoot_pixels = Vector2(550,50) #dropdown version
-							shoot(shoot_pixels, current_color, scale) #shooting the matches upwards, passing the position of the match and it's color
+							scale_shoot = Vector2(1.5, 1.5)
+							shoot(shoot_pixels, current_color, scale_shoot) #shooting the matches upwards, passing the position of the match and it's color
 							board[i][j].make_matched(matched_index)
 							board[i+1][j].make_matched(matched_index)
 							board[i+2][j].make_matched(matched_index)
@@ -251,13 +254,16 @@ func find_matches():
 								matched_colors.append(current_color)
 #							shoot_pixels = grid_to_pixel(i, j+1) #shooting the matches upwards, shooting where the match is version
 							shoot_pixels = Vector2(550,50) #dropdown version
-							shoot(shoot_pixels, current_color, scale) #shooting the matches upwards, passing the position of the match and it's color
+							scale_shoot = Vector2(1.5, 1.5)
+							shoot(shoot_pixels, current_color, scale_shoot) #shooting the matches upwards, passing the position of the match and it's color
 							board[i][j].make_matched(matched_index)
 							board[i][j+1].make_matched(matched_index)
 							board[i][j+2].make_matched(matched_index)
 	print("end find_matches")
 
 #shooting the matches upwards function
+func acid_reflux():
+	$"../dynamicwater".scale.y += 1
 
 func shoot(i_j_pix, color, scale):
 	if color == null:
@@ -265,15 +271,15 @@ func shoot(i_j_pix, color, scale):
 	else:
 		var projectile = load("res://Pieces/Projectile"+color+".tscn") #what is to be shot
 		var bullet = projectile.instance() #instancing var
+		print("color      ", color)
 		add_child(bullet) #actual child added
 	##	print("shooting ", i_j_pix) #just to check the coordinates in pixels
 	##	print("double check if color has passed ", projectile)
-		print(scale)
-		bullet.scale = scale
+		bullet.get_tree().get_root().find_node("projectile_absolute", true, false).scale = scale
 		bullet.position = i_j_pix #telling godot the position of the sprite placement
-		
-		emit_signal("color_info", projectile)
 		color_info = color
+#		emit_signal("color_info", projectile)
+#		color_info = color
 	
 	
 
@@ -344,7 +350,8 @@ func _on_Stomach_detector_body_entered(body):
 
 
 func _on_Timer_timeout():
-	var stomach_opening = Vector2(200, 180)
-	var scale = Vector2(0.2, 0.2)
-	shoot(stomach_opening, color_info, scale)
+	var stomach_opening = Vector2(193, 64)
+	var scale_bullet = Vector2(1.5, 1.5)
+	shoot(stomach_opening, color_info, scale_bullet)
 	pass # Replace with function body.
+

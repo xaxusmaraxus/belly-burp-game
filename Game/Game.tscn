@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Grid/Grid.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Burps/SoundPlayer.tscn" type="PackedScene" id=2]
@@ -20,17 +20,14 @@
 [ext_resource path="res://Assets/Sounds/Burps/fablevision.wav" type="AudioStream" id=18]
 [ext_resource path="res://Assets/Graphics/magnifying_glass.png" type="Texture" id=19]
 [ext_resource path="res://Assets/Graphics/stomach_collision.png" type="Texture" id=20]
+[ext_resource path="res://Assets/Graphics/bear_belly.png" type="Texture" id=21]
+[ext_resource path="res://addons/DYNAMIC_WATER/dynamic_water.gd" type="Script" id=22]
+[ext_resource path="res://Assets/Graphics/bear_belly_overlay.png" type="Texture" id=23]
 
 [sub_resource type="DynamicFont" id=4]
 size = 100
 outline_size = 5
 font_data = ExtResource( 4 )
-
-[sub_resource type="RectangleShape2D" id=6]
-extents = Vector2( 341.5, 17.25 )
-
-[sub_resource type="RectangleShape2D" id=7]
-extents = Vector2( 5.5, 205.75 )
 
 [sub_resource type="DynamicFont" id=5]
 outline_size = 1
@@ -38,6 +35,12 @@ font_data = ExtResource( 7 )
 
 [sub_resource type="RectangleShape2D" id=11]
 extents = Vector2( 33.5, 14 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 168.25, 17.25 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 5.5, 205.75 )
 
 [node name="Game" type="Node2D"]
 position = Vector2( -1, 0 )
@@ -76,38 +79,16 @@ position = Vector2( 0, -53 )
 z_index = -1
 
 [node name="CafeBG" type="TextureRect" parent="CafeBG_Node"]
-margin_left = 3.0
-margin_top = 55.0
-margin_right = 722.0
-margin_bottom = 508.0
+margin_left = 2.0
+margin_top = 50.0
+margin_right = 721.0
+margin_bottom = 503.0
 texture = ExtResource( 3 )
 expand = true
 
 [node name="Bear" parent="." instance=ExtResource( 5 )]
 position = Vector2( 575, 269 )
 scale = Vector2( 1.2, 1.2 )
-
-[node name="Plate" type="StaticBody2D" parent="."]
-visible = false
-script = ExtResource( 8 )
-
-[node name="Sprite" type="Sprite" parent="Plate"]
-position = Vector2( 354, 350 )
-scale = Vector2( 0.222503, 0.170981 )
-texture = ExtResource( 11 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Plate"]
-position = Vector2( 356, 386 )
-shape = SubResource( 6 )
-one_way_collision = true
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Plate"]
-position = Vector2( 709, 192 )
-shape = SubResource( 7 )
-
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="Plate"]
-position = Vector2( 6, 194 )
-shape = SubResource( 7 )
 
 [node name="Watermark" parent="." instance=ExtResource( 6 )]
 custom_fonts/font = SubResource( 5 )
@@ -147,15 +128,11 @@ tint_progress = Color( 0.792157, 0, 0, 1 )
 stream = ExtResource( 18 )
 
 [node name="MagnifyingGlass" type="Sprite" parent="."]
+visible = false
 position = Vector2( 238, 309 )
 rotation = 0.472553
-scale = Vector2( 0.6, 0.6 )
+scale = Vector2( 0.3, 0.3 )
 texture = ExtResource( 19 )
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-position = Vector2( 194, 251 )
-scale = Vector2( 0.45, 0.45 )
-polygon = PoolVector2Array( -62, -229.1, -62, -219, -67.6, -219, -119, -195.7, -119, -194.9, -148, -175, -148, -174.1, -173, -150.2, -173, -148.2, -184, -136.1, -184, -134.4, -205, -101.4, -205, -98.6, -218, -68.7, -218, -64.7, -225, -39, -225, -31.9, -228, -9.7, -228, 8, -227.1, 20, -226.2, 20, -222.2, 50, -221.4, 50, -215.5, 74, -214.6, 74, -202.6, 104, -201.9, 104, -184.9, 133, -184.1, 133, -149.1, 172, -147.2, 172, -135.1, 183, -133.4, 183, -106.4, 201, -104.6, 201, -60.4, 219, -56.8, 219, -8.7, 227, 8.8, 227, 36, 224.2, 36, 223.3, 59, 219.3, 59, 218.5, 88, 209.5, 88, 208.8, 134, 183.7, 134, 183.1, 173, 148.1, 173, 146.2, 184, 134.1, 184, 132.4, 202, 105.3, 202, 103.6, 220, 59.4, 220, 55.8, 228, 7.7, 228, -10, 222.2, -52, 221.5, -52, 210.5, -89, 209.8, -89, 184.7, -135, 184.1, -135, 160.1, -164, 158.2, -164, 139.1, -182, 137.3, -182, 115.3, -198, 113.5, -198, 89.4, -211, 86.7, -211, 62, -219.6, 62, -221.4, 59.7, -224.9, 60.8, -227, 61.6, -227, 63.6, -233, 69.4, -233, 117, -213.3, 117, -212.1, 153, -189.1, 153, -187.9, 185, -157.9, 185, -155.7, 207, -127.7, 207, -125.6, 225, -92.5, 225, -89.3, 237, -54.3, 237, -49.4, 239, -40.3, 239, 39.1, 236.8, 56, 235.5, 56, 224.5, 94, 223.2, 94, 209.3, 124, 208.1, 124, 189.1, 153, 187.8, 153, 151.8, 190, 149.7, 190, 127.7, 207, 125.6, 207, 92.5, 225, 89.4, 225, 62.4, 235, 58.4, 235, 40.3, 239, -40, 239, -71, 232.7, -71, 231.5, -103, 220.4, -103, 219.2, -129, 206.2, -129, 205, -159, 184, -159, 182.8, -185, 157.9, -185, 155.7, -207, 127.7, -207, 125.5, -221, 101.5, -221, 98.3, -233, 69.4, -233, 65, -239, 39.7, -239, -42.7, -236.7, -56, -235.5, -56, -227.5, -86, -226.3, -86, -213.3, -117, -212.1, -117, -198.1, -141, -197, -141, -173, -171, -171.8, -171, -151.8, -190, -149.7, -190, -122.7, -210, -120.5, -210, -92.5, -225, -89.4, -225, -71, -231.4, -71, -232.2, -69, -233.3 )
 
 [node name="Stomach_detector" type="Area2D" parent="."]
 
@@ -174,6 +151,56 @@ scale = Vector2( 0.586297, 0.586297 )
 texture = ExtResource( 20 )
 
 [node name="scaling" type="Tween" parent="."]
+
+[node name="dynamicwater" type="Node2D" parent="."]
+modulate = Color( 1, 1.1, 1, 1 )
+position = Vector2( 34, 408 )
+z_index = 3
+z_as_relative = false
+script = ExtResource( 22 )
+ALTURA = 10.0
+LARGURA = 320.0
+RESOLUCAO = 20.0
+COR = Color( 0.305882, 0.752941, 0, 0.662745 )
+TENSAO = 0.007
+AMORTECIMENTO = 0.011
+
+[node name="BearBellyOverlay" type="Sprite" parent="."]
+position = Vector2( 191, 227 )
+scale = Vector2( 0.396, 0.445 )
+z_index = 3
+z_as_relative = false
+texture = ExtResource( 23 )
+
+[node name="BearBelly" type="Sprite" parent="."]
+position = Vector2( 195, 247 )
+scale = Vector2( 0.39625, 0.444973 )
+texture = ExtResource( 21 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 170, 29, 168, 117, 48, 163, 24, 251, 31, 341, 63, 394, 154, 415, 264, 412, 335, 386, 352, 300, 357, 205, 337, 147, 256, 127, 226, 120, 220, 27, 365, 156, 362, 376, 322, 425, 155, 435, 45, 423, 10, 367, 3, 202, 25, 126, 86, 105, 146, 52 )
+
+[node name="Plate" type="StaticBody2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Sprite" type="Sprite" parent="Plate"]
+visible = false
+position = Vector2( 354, 350 )
+scale = Vector2( 0.222503, 0.170981 )
+texture = ExtResource( 11 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 191, 427 )
+shape = SubResource( 6 )
+one_way_collision = true
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 351, 229 )
+shape = SubResource( 7 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 22, 220 )
+shape = SubResource( 7 )
 
 [connection signal="match_sound" from="Grid" to="SoundPlayer" method="_on_Grid_match_sound"]
 [connection signal="move_sound" from="Grid" to="SoundPlayer" method="_on_Grid_move_sound"]

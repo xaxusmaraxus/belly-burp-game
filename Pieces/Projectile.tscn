@@ -5,7 +5,7 @@
 [ext_resource path="res://Assets/Sounds/Eating/chewing_carrot.wav" type="AudioStream" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 37, 28.75 )
+extents = Vector2( 49, 38.4922 )
 
 [node name="Projectile" type="Node2D"]
 
@@ -19,15 +19,17 @@ applied_force = Vector2( 0, -10 )
 script = ExtResource( 1 )
 velocity = Vector2( 100, 10 )
 
-[node name="projectile" type="Sprite" parent="RigidBody2D"]
+[node name="projectile_text" type="Sprite" parent="RigidBody2D"]
 position = Vector2( 6.125, 2.625 )
 scale = Vector2( 1.5, 1.5 )
 z_index = 1
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
-position = Vector2( 5, 12 )
+visible = false
+position = Vector2( 5, 0.984375 )
 shape = SubResource( 1 )
+disabled = true
 
 [node name="scaling" type="Tween" parent="RigidBody2D"]
 

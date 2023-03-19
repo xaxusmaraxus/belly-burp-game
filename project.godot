@@ -43,7 +43,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/water2d/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/DYNAMIC_WATER/plugin.cfg", "res://addons/water2d/plugin.cfg" )
 
 [input]
 
