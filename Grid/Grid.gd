@@ -46,6 +46,7 @@ var sound = 0
 var randomsound = RandomNumberGenerator.new()
 var color_info
 var scale_shoot
+var belch_size = 0
 
 onready var pieces_container = $PiecesContainer
 onready var wait_timer = $WaitTimer
@@ -120,11 +121,16 @@ func is_in_grid(grid_position: Vector2) -> bool:
 
 
 func _process(_delta):
-	if $"../Darm/TextureProgress".value == 100:
-		print("BUUUURP")
-		$"../Burp_sound".play()
-		$"../Darm/TextureProgress".value = 0
-
+#	if $"../Darm/TextureProgress".value == 100:
+#		print("BUUUURP")
+#		$"../Burp_sound".play()
+#		$"../Darm/TextureProgress".value = 0
+	if belch_size == 5:
+		for n in belch_size:
+#			emit_signal("match_sound", n)
+			$"../Burp_sound".play()
+			print(n)
+			n -= 1
 	if not is_waiting:
 		touch_input()
 
@@ -264,6 +270,7 @@ func find_matches():
 #shooting the matches upwards function
 func acid_reflux():
 	$"../dynamicwater".scale.y += 1
+	$"../Plate/CollisionShape2D".position.y -= 10
 
 func shoot(i_j_pix, color, scale):
 	if color == null:
@@ -299,7 +306,6 @@ func delete_matches(index):
 						emit_signal("shoot_pixels")
 						board[i][j].queue_free()
 						board[i][j] = null
-#	emit_signal("match_sound", combo)
 	play_sound()
 	print("end delete_matches")
 
@@ -353,5 +359,6 @@ func _on_Timer_timeout():
 	var stomach_opening = Vector2(193, 64)
 	var scale_bullet = Vector2(1.5, 1.5)
 	shoot(stomach_opening, color_info, scale_bullet)
+	belch_size += 1
 	pass # Replace with function body.
 

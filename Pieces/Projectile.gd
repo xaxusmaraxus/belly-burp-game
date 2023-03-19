@@ -23,7 +23,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	if global_position.y >= 285 && global_position.x >= 300:
+	if global_position.y >= 285 && global_position.x >= 320:
 		eat()
 	pass
 #
