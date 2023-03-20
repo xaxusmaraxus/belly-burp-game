@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://Grid/Grid.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Burps/SoundPlayer.tscn" type="PackedScene" id=2]
@@ -24,6 +24,9 @@
 [ext_resource path="res://addons/DYNAMIC_WATER/dynamic_water.gd" type="Script" id=22]
 [ext_resource path="res://Assets/Graphics/bear_belly_overlay.png" type="Texture" id=23]
 [ext_resource path="res://Assets/Graphics/match-3-game-asset-ui-effects-free/ui_assets/button_9slice.png" type="Texture" id=24]
+[ext_resource path="res://Game/tile_held.gd" type="Script" id=25]
+[ext_resource path="res://Assets/UI/GUI Interface Kit Free/PNG/GUI-Kit-Pack-Free_35.png" type="Texture" id=26]
+[ext_resource path="res://Assets/UI/GUI Interface Kit Free/PNG/GUI-Kit-Pack-Free_23.png" type="Texture" id=27]
 
 [sub_resource type="DynamicFont" id=4]
 size = 100
@@ -48,6 +51,23 @@ position = Vector2( -1, 0 )
 script = ExtResource( 9 )
 
 [node name="Grid" parent="." instance=ExtResource( 1 )]
+
+[node name="tile_held" type="TextureProgress" parent="Grid"]
+margin_left = 10.0
+margin_top = 435.0
+margin_right = 716.0
+margin_bottom = 476.0
+value = 50.0
+texture_under = ExtResource( 26 )
+texture_over = ExtResource( 26 )
+texture_progress = ExtResource( 27 )
+tint_over = Color( 0.784314, 0.443137, 0.443137, 1 )
+tint_progress = Color( 0.913725, 0, 0, 1 )
+nine_patch_stretch = true
+script = ExtResource( 25 )
+
+[node name="TouchTimer" type="Timer" parent="Grid"]
+wait_time = 5.0
 
 [node name="SoundPlayer" parent="." instance=ExtResource( 2 )]
 
@@ -206,16 +226,16 @@ position = Vector2( 13, -6 )
 z_index = 3
 
 [node name="Button9Slice" type="Sprite" parent="Area2D"]
-position = Vector2( 228, 450 )
+position = Vector2( 406.626, 76.9282 )
 scale = Vector2( 1.7627, 0.772877 )
 texture = ExtResource( 24 )
 offset = Vector2( -26.0964, -2.58771 )
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Area2D"]
-margin_left = 62.0
-margin_top = 434.0
-margin_right = 226.0
-margin_bottom = 465.0
+margin_left = 240.626
+margin_top = 60.9282
+margin_right = 404.626
+margin_bottom = 91.9282
 rect_scale = Vector2( 1.8, 1.8 )
 custom_colors/default_color = Color( 0.972549, 0, 0, 1 )
 text = "RELEASE THE KRAKEN"
@@ -229,6 +249,8 @@ label_file = "res://build_info.txt"
 [connection signal="match_sound" from="Grid" to="SoundPlayer" method="_on_Grid_match_sound"]
 [connection signal="move_sound" from="Grid" to="SoundPlayer" method="_on_Grid_move_sound"]
 [connection signal="release_sound" from="Grid" to="SoundPlayer" method="_on_Grid_release_sound"]
+[connection signal="timeout" from="Grid/TouchTimer" to="Grid" method="_on_TouchTimer_timeout"]
+[connection signal="timeout" from="Grid/TouchTimer" to="Grid/tile_held" method="_on_TouchTimer_timeout"]
 [connection signal="timeout" from="Screens/SignTimer" to="." method="_on_SignTimer_timeout"]
 [connection signal="body_entered" from="Stomach_detector" to="Grid" method="_on_Stomach_detector_body_entered"]
 [connection signal="timeout" from="Stomach_detector/Timer" to="Grid" method="_on_Timer_timeout"]

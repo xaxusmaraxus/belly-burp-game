@@ -47,15 +47,23 @@ var randomsound = RandomNumberGenerator.new()
 var color_info
 var scale_shoot
 var belch_size = 0
+var countdown_started = false
+
+export(float) var maxTime := 5
 
 onready var pieces_container = $PiecesContainer
 onready var wait_timer = $WaitTimer
+onready var touch_timer = $TouchTimer
 
 func _ready():
 	randomize()
 	board = make_2d_array()
 	spawn_pieces()
 	is_initializing = false
+	$tile_held.step = 0
+	$tile_held.min_value = 0
+	$tile_held.max_value = maxTime
+	$tile_held.value = $tile_held.max_value
 
 func make_2d_array() -> Array:
 	var array = []
@@ -133,6 +141,9 @@ func _process(_delta):
 			n -= 1
 	if not is_waiting:
 		touch_input()
+	if countdown_started == true:
+		$tile_held.value -= _delta
+		
 
 
 func touch_input():
@@ -150,7 +161,8 @@ func touch_piece():
 		moving_piece = board[last_pos.x][last_pos.y]
 		is_touching = true
 		moving_piece.enable_held()
-
+		touch_timer.start() #hook time animation here
+		countdown_started = true
 
 func release_piece():
 	for i in width:
@@ -160,9 +172,13 @@ func release_piece():
 				break
 	moving_piece.disable_held()
 	is_touching = false
+	touch_timer.stop() #reset time bar here
 	emit_signal("release_sound")
 	emit_signal("waiting_started")
 	acid_reflux() #hook acid reflux here
+	countdown_started = false
+	$tile_held.value = maxTime
+	
 
 
 # connected signal
