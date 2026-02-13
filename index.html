@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Belly Burp Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            touch-action: none;
+        }
+        #game-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            max-height: 800px;
+        }
+    </style>
+</head>
+<body>
+<div id="game-container"></div>
+
+<script>
+// Game Configuration
+const CONFIG = {
+    width: 360,
+    height: 640,
+    gridCols: 6,
+    gridRows: 5,
+    tileSize: 55,
+    gridOffsetX: 22,
+    gridOffsetY: 180,
+    colors: ['#FFB6C1', '#87CEEB', '#90EE90', '#DDA0DD', '#F0E68C'], // Pink, Blue, Green, Purple, Yellow
+    colorNames: ['pink', 'blue', 'green', 'purple', 'yellow']
+};
+
+// Game Scene
+class MainScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'MainScene' });
+        this.grid = [];
+        this.selectedTile = null;
+        this.isMatching = false;
+        this.score = 0;
+        this.bellyFullness = 0;
+        this.belchCount = 0;
+    }
+
+    preload() {
+        // Generate colored circles as tiles
+        this.generateTileTextures();
+    }
+
+    create() {
+        // Background
+        this.add.rectangle(180, 320, 360, 640, 0x1a0a2e);
+        
+        // Title
+        this.add.text(180, 40, 'BELLY BURP', {
+            fontSize: '32px',
+            fontFamily: 'Arial',
+            color: '#ff6b9d',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+        
+        // Score display
+        this.scoreText = this.add.text(20, 80, 'Score: 0', {
+            fontSize: '18px',
+            color: '#fff'
+        });
+        
+        // Belly meter
+        this.add.text(20, 110, 'Belly:', { fontSize: '16px', color: '#fff' });
+        this.bellyBar = this.add.rectangle(100, 118, 100, 16, 0x333333).setOrigin(0, 0.5);
+        this.bellyFill = this.add.rectangle(100, 118, 0, 16, 0xff6b9d).setOrigin(0, 0.5);
+        
+        // Belch counter
+        this.belchText = this.add.text(220, 110, 'Belches: 0', {
+            fontSize: '16px',
+            color: '#ffaa00'
+        });
+
+        // Create grid
+        this.createGrid();
+        
+        // Kraken button
+        this.createKrakenButton();
+        
+        // Instructions
+        this.add.text(180, 580, 'Match 3 to feed the belly!', {
+            fontSize: '14px',
+            color: '#888'
+        }).setOrigin(0.5);
+    }
+
+    generateTileTextures() {
+        CONFIG.colorNames.forEach((color, i) => {
+            const graphics = this.make.graphics({ x: 0, y: 0, add: false });
+            graphics.fillStyle(parseInt(CONFIG.colors[i].replace('#', '0x')), 1);
+            graphics.fillCircle(CONFIG.tileSize/2, CONFIG.tileSize/2, CONFIG.tileSize/2 - 4);
+            graphics.fillStyle(0xffffff, 0.3);
+            graphics.fillCircle(CONFIG.tileSize/2 - 8, CONFIG.tileSize/2 - 8, 8);
+            graphics.generateTexture('tile_' + i, CONFIG.tileSize, CONFIG.tileSize);
+            graphics.destroy();
+        });
+    }
+
+    createGrid() {
+        this.tiles = this.add.group();
+        
+        for (let row = 0; row < CONFIG.gridRows; row++) {
+            this.grid[row] = [];
+            for (let col = 0; col < CONFIG.gridCols; col++) {
+                let tile = this.getValidTile(col, row);
+                this.placeTile(col, row, tile);
+            }
+        }
+    }
+
+    getValidTile(col, row) {
+        let tile;
+        let attempts = 0;
+        do {
+            tile = Phaser.Math.Between(0, CONFIG.colors.length - 1);
+            attempts++;
+        } while (attempts < 50 && this.wouldMatch(col, row, tile));
+        return tile;
+    }
+
+    wouldMatch(col, row, tile) {
+        // Check horizontal
+        if (col >= 2) {
+            if (this.grid[col-1] && this.grid[col-1][row] === tile &&
+                this.grid[col-2] && this.grid[col-2][row] === tile) {
+                return true;
+            }
+        }
+        // Check vertical
+        if (row >= 2) {
+            if (this.grid[col] && this.grid[col][row-1] === tile &&
+                this.grid[col] && this.grid[col][row-2] === tile) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    placeTile(col, row, tile) {
+        const x = CONFIG.gridOffsetX + col * CONFIG.tileSize + CONFIG.tileSize/2;
+        const y = CONFIG.gridOffsetY + row * CONFIG.tileSize + CONFIG.tileSize/2;
+        
+        const sprite = this.add.sprite(x, y, 'tile_' + tile)
+            .setInteractive({ useHandCursor: true })
+            .setData('col', col)
+            .setData('row', row)
+            .setData('tile', tile);
+        
+        sprite.on('pointerdown', () => this.onTileClick(sprite));
+        
+        this.grid[col][row] = tile;
+        this.tiles.add(sprite);
+        return sprite;
+    }
+
+    onTileClick(tile) {
+        if (this.isMatching) return;
+        
+        if (!this.selectedTile) {
+            // First selection
+            this.selectedTile = tile;
+            tile.setScale(1.15);
+            tile.setAlpha(0.8);
+        } else if (this.selectedTile === tile) {
+            // Deselect
+            this.selectedTile.setScale(1);
+            this.selectedTile.setAlpha(1);
+            this.selectedTile = null;
+        } else {
+            // Try swap
+            const col1 = this.selectedTile.getData('col');
+            const row1 = this.selectedTile.getData('row');
+            const col2 = tile.getData('col');
+            const row2 = tile.getData('row');
+            
+            // Check if adjacent
+            const dist = Math.abs(col1 - col2) + Math.abs(row1 - row2);
+            if (dist === 1) {
+                this.swapTiles(this.selectedTile, tile);
+                this.selectedTile.setScale(1);
+                this.selectedTile.setAlpha(1);
+                this.selectedTile = null;
+            } else {
+                // Select new tile instead
+                this.selectedTile.setScale(1);
+                this.selectedTile.setAlpha(1);
+                this.selectedTile = tile;
+                tile.setScale(1.15);
+                tile.setAlpha(0.8);
+            }
+        }
+    }
+
+    swapTiles(tile1, tile2) {
+        const col1 = tile1.getData('col');
+        const row1 = tile1.getData('row');
+        const col2 = tile2.getData('col');
+        const row2 = tile2.getData('row');
+        
+        // Swap in grid
+        const temp = this.grid[col1][row1];
+        this.grid[col1][row1] = this.grid[col2][row2];
+        this.grid[col2][row2] = temp;
+        
+        // Animate swap
+        this.tweens.add({
+            targets: tile1,
+            x: tile2.x,
+            y: tile2.y,
+            duration: 200
+        });
+        
+        this.tweens.add({
+            targets: tile2,
+            x: tile1.x,
+            y: tile1.y,
+            duration: 200,
+            onComplete: () => {
+                // Check for matches
+                if (!this.findMatches()) {
+                    // Swap back if no match
+                    this.swapBack(tile1, tile2, col1, row1, col2, row2);
+                } else {
+                    this.processMatches();
+                }
+            }
+        });
+        
+        // Update tile data
+        tile1.setData('col', col2);
+        tile1.setData('row', row2);
+        tile2.setData('col', col1);
+        tile2.setData('row', row1);
+    }
+
+    swapBack(tile1, tile2, col1, row1, col2, row2) {
+        const temp = this.grid[col1][row1];
+        this.grid[col1][row1] = this.grid[col2][row2];
+        this.grid[col2][row2] = temp;
+        
+        this.tweens.add({ targets: tile1, x: tile2.x, y: tile2.y, duration: 200 });
+        this.tweens.add({ targets: tile2, x: tile1.x, y: tile1.y, duration: 200 });
+        
+        tile1.setData('col', col2);
+        tile1.setData('row', row2);
+        tile2.setData('col', col1);
+        tile2.setData('row', row1);
+    }
+
+    findMatches() {
+        this.matches = [];
+        
+        // Check horizontal
+        for (let row = 0; row < CONFIG.gridRows; row++) {
+            for (let col = 0; col < CONFIG.gridCols - 2; col++) {
+                const tile = this.grid[col][row];
+                if (tile !== null && 
+                    this.grid[col+1][row] === tile && 
+                    this.grid[col+2][row] === tile) {
+                    let match = [col, row];
+                    let c = col + 3;
+                    while (c < CONFIG.gridCols && this.grid[c][row] === tile) {
+                        match.push(c);
+                        c++;
+                    }
+                    this.matches.push({ tiles: match, row: row, color: tile });
+                }
+            }
+        }
+        
+        // Check vertical
+        for (let col = 0; col < CONFIG.gridCols; col++) {
+            for (let row = 0; row < CONFIG.gridRows - 2; row++) {
+                const tile = this.grid[col][row];
+                if (tile !== null && 
+                    this.grid[col][row+1] === tile && 
+                    this.grid[col][row+2] === tile) {
+                    let match = [row, col];
+                    let r = row + 3;
+                    while (r < CONFIG.gridRows && this.grid[col][r] === tile) {
+                        match.push(r);
+                        r++;
+                    }
+                    this.matches.push({ cols: match, col: col, color: tile });
+                }
+            }
+        }
+        
+        return this.matches.length > 0;
+    }
+
+    processMatches() {
+        this.isMatching = true;
+        
+        // Calculate score
+        let matchCount = 0;
+        this.matches.forEach(match => {
+            const count = match.tiles ? match.tiles.length : match.cols.length;
+            matchCount += count;
+        });
+        
+        const points = matchCount * 100;
+        this.score += points;
+        this.scoreText.setText('Score: ' + this.score);
+        
+        // Feed the belly!
+        this.bellyFullness = Math.min(100, this.bellyFullness + matchCount * 10);
+        this.bellyFill.width = this.bellyFullness;
+        
+        // Animate matched tiles
+        this.matches.forEach(match => {
+            let tiles = [];
+            if (match.tiles) {
+                tiles = match.tiles.map(c => ({ col: c, row: match.row }));
+            } else {
+                tiles = match.cols.map(r => ({ col: match.col, row: r }));
+            }
+            
+            tiles.forEach(pos => {
+                const sprite = this.tiles.getChildren().find(t => 
+                    t.getData('col') === pos.col && t.getData('row') === pos.row);
+                if (sprite) {
+                    this.tweens.add({
+                        targets: sprite,
+                        scaleX: 1.5,
+                        scaleY: 1.5,
+                        alpha: 0,
+                        duration: 300,
+                        onComplete: () => sprite.destroy()
+                    });
+                }
+                this.grid[pos.col][pos.row] = null;
+            });
+        });
+        
+        // Drop tiles
+        this.time.delayedCall(350, () => {
+            this.dropTiles();
+        });
+    }
+
+    dropTiles() {
+        for (let col = 0; col < CONFIG.gridCols; col++) {
+            let emptySpaces = 0;
+            for (let row = CONFIG.gridRows - 1; row >= 0; row--) {
+                if (this.grid[col][row] === null) {
+                    emptySpaces++;
+                } else if (emptySpaces > 0) {
+                    // Move tile down
+                    const sprite = this.tiles.getChildren().find(t => 
+                        t.getData('col') === col && t.getData('row') === row);
+                    if (sprite) {
+                        const newRow = row + emptySpaces;
+                        this.grid[col][newRow] = this.grid[col][row];
+                        this.grid[col][row] = null;
+                        sprite.setData('row', newRow);
+                        this.tweens.add({
+                            targets: sprite,
+                            y: CONFIG.gridOffsetY + newRow * CONFIG.tileSize + CONFIG.tileSize/2,
+                            duration: 200
+                        });
+                    }
+                }
+            }
+            
+            // Fill empty spaces at top
+            for (let i = 0; i < emptySpaces; i++) {
+                const row = emptySpaces - 1 - i;
+                const tile = Phaser.Math.Between(0, CONFIG.colors.length - 1);
+                this.grid[col][row] = tile;
+                
+                const x = CONFIG.gridOffsetX + col * CONFIG.tileSize + CONFIG.tileSize/2;
+                const y = CONFIG.gridOffsetY - (i + 1) * CONFIG.tileSize;
+                
+                const sprite = this.add.sprite(x, y, 'tile_' + tile)
+                    .setInteractive({ useHandCursor: true })
+                    .setData('col', col)
+                    .setData('row', row)
+                    .setData('tile', tile);
+                sprite.on('pointerdown', () => this.onTileClick(sprite));
+                this.tiles.add(sprite);
+                
+                this.tweens.add({
+                    targets: sprite,
+                    y: CONFIG.gridOffsetY + row * CONFIG.tileSize + CONFIG.tileSize/2,
+                    duration: 200
+                });
+            }
+        }
+        
+        // Check for chain reactions
+        this.time.delayedCall(250, () => {
+            if (this.findMatches()) {
+                this.processMatches();
+            } else {
+                this.isMatching = false;
+            }
+        });
+    }
+
+    createKrakenButton() {
+        const btn = this.add.rectangle(180, 520, 160, 50, 0xff4444)
+            .setInteractive({ useHandCursor: true });
+        
+        this.add.text(180, 520, '🎆 RELEASE\nTHE KRAKEN', {
+            fontSize: '16px',
+            fontFamily: 'Arial',
+            color: '#fff',
+            align: 'center'
+        }).setOrigin(0.5);
+        
+        btn.on('pointerdown', () => this.releaseTheKraken());
+    }
+
+    releaseTheKraken() {
+        if (this.bellyFullness < 20) {
+            // Not ready yet - shake button
+            this.tweens.add({
+                targets: this.children.list.filter(c => c.type === 'Rectangle')[0],
+                x: 185,
+                duration: 50,
+                yoyo: true,
+                repeat: 3
+            });
+            return;
+        }
+        
+        // Calculate bonus points
+        const belchBonus = this.belchCount * 500;
+        const bellyBonus = Math.floor(this.bellyFullness * 10);
+        this.score += 1000 + belchBonus + bellyBonus;
+        this.scoreText.setText('Score: ' + this.score);
+        
+        // Dopamine flash effects!
+        this.dopamineFlash();
+        
+        // Clear belly
+        this.bellyFullness = 0;
+        this.bellyFill.width = 0;
+        this.belchCount++;
+        this.belchText.setText('Belches: ' + this.belchCount);
+        
+        // Clear all tiles
+        this.tiles.clear(true, true);
+        for (let col = 0; col < CONFIG.gridCols; col++) {
+            for (let row = 0; row < CONFIG.gridRows; row++) {
+                this.grid[col][row] = null;
+            }
+        }
+        
+        // Respawn
+        this.time.delayedCall(500, () => {
+            this.createGrid();
+        });
+    }
+
+    dopamineFlash() {
+        // Multiple color flashes for dopamine hit!
+        const colors = [0xffffff, 0xffff00, 0x00ff00, 0xff00ff, 0x00ffff, 0xffffff];
+        
+        colors.forEach((color, i) => {
+            this.time.delayedCall(i * 100, () => {
+                const flash = this.add.rectangle(180, 320, 400, 700, color, 0.6);
+                this.tweens.add({
+                    targets: flash,
+                    alpha: 0,
+                    duration: 150,
+                    onComplete: () => flash.destroy()
+                });
+            });
+        });
+        
+        // Screen shake
+        this.cameras.main.shake(300, 0.02);
+    }
+}
+
+// Start game
+const config = {
+    type: Phaser.AUTO,
+    parent: 'game-container',
+    width: CONFIG.width,
+    height: CONFIG.height,
+    backgroundColor: '#000',
+    scene: MainScene,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    }
+};
+
+new Phaser.Game(config);
+</script>
+</body>
+</html>
