@@ -1,0 +1,263 @@
+[gd_scene load_steps=33 format=2]
+
+[ext_resource path="res://Grid/Grid.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Burps/SoundPlayer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/Graphics/Cafe Background.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Fonts/Xolonium-Bold.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Bear/Bear.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Utility/watermark.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Assets/Fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://Game/Plate.gd" type="Script" id=8]
+[ext_resource path="res://Game/Game.gd" type="Script" id=9]
+[ext_resource path="res://UI/EndScreen.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Assets/Graphics/plate_atlas.tres" type="Texture" id=11]
+[ext_resource path="res://Assets/Graphics/darm.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Sounds/Appetite/3.wav" type="AudioStream" id=13]
+[ext_resource path="res://Assets/Sounds/Appetite/2.mp3" type="AudioStream" id=14]
+[ext_resource path="res://Assets/Sounds/Appetite/5.mp3" type="AudioStream" id=15]
+[ext_resource path="res://Assets/Sounds/Appetite/1.wav" type="AudioStream" id=16]
+[ext_resource path="res://Assets/Sounds/Appetite/4.mp3" type="AudioStream" id=17]
+[ext_resource path="res://Assets/Sounds/Burps/fablevision.wav" type="AudioStream" id=18]
+[ext_resource path="res://Assets/Graphics/magnifying_glass.png" type="Texture" id=19]
+[ext_resource path="res://Assets/Graphics/stomach_collision.png" type="Texture" id=20]
+[ext_resource path="res://Assets/Graphics/bear_belly.png" type="Texture" id=21]
+[ext_resource path="res://addons/DYNAMIC_WATER/dynamic_water.gd" type="Script" id=22]
+[ext_resource path="res://Assets/Graphics/bear_belly_overlay.png" type="Texture" id=23]
+[ext_resource path="res://Assets/Graphics/match-3-game-asset-ui-effects-free/ui_assets/button_9slice.png" type="Texture" id=24]
+[ext_resource path="res://Game/tile_held.gd" type="Script" id=25]
+[ext_resource path="res://Assets/UI/GUI Interface Kit Free/PNG/GUI-Kit-Pack-Free_35.png" type="Texture" id=26]
+[ext_resource path="res://Assets/UI/GUI Interface Kit Free/PNG/GUI-Kit-Pack-Free_23.png" type="Texture" id=27]
+
+[sub_resource type="DynamicFont" id=4]
+size = 100
+outline_size = 5
+font_data = ExtResource( 4 )
+
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 33.5, 14 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 168.25, 17.25 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 5.5, 205.75 )
+
+[sub_resource type="DynamicFont" id=5]
+
+[sub_resource type="RectangleShape2D" id=12]
+extents = Vector2( 120.0, 40.0 )
+outline_size = 1
+font_data = ExtResource( 7 )
+
+[node name="Game" type="Node2D"]
+position = Vector2( -1, 0 )
+script = ExtResource( 9 )
+
+[node name="Grid" parent="." instance=ExtResource( 1 )]
+
+[node name="tile_held" type="TextureProgress" parent="Grid"]
+margin_left = 10.0
+margin_top = 435.0
+margin_right = 716.0
+margin_bottom = 476.0
+value = 50.0
+texture_under = ExtResource( 26 )
+texture_over = ExtResource( 26 )
+texture_progress = ExtResource( 27 )
+tint_over = Color( 0.784314, 0.443137, 0.443137, 1 )
+tint_progress = Color( 0.913725, 0, 0, 1 )
+nine_patch_stretch = true
+script = ExtResource( 25 )
+
+[node name="TouchTimer" type="Timer" parent="Grid"]
+wait_time = 5.0
+
+[node name="SoundPlayer" parent="." instance=ExtResource( 2 )]
+
+[node name="Screens" type="CanvasLayer" parent="."]
+pause_mode = 2
+layer = 2
+
+[node name="SignScreen" type="ColorRect" parent="Screens"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.145098, 0.0588235, 0.301961, 0.784314 )
+
+[node name="SignLabel" type="Label" parent="Screens/SignScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 4 )
+text = "Ready?"
+align = 1
+valign = 1
+
+[node name="EndScreen" parent="Screens" instance=ExtResource( 10 )]
+visible = false
+
+[node name="SignTimer" type="Timer" parent="Screens"]
+
+[node name="CafeBG_Node" type="Node2D" parent="."]
+position = Vector2( 0, -53 )
+z_index = -1
+
+[node name="CafeBG" type="TextureRect" parent="CafeBG_Node"]
+margin_left = 2.0
+margin_top = 50.0
+margin_right = 721.0
+margin_bottom = 503.0
+texture = ExtResource( 3 )
+expand = true
+
+[node name="Bear" parent="." instance=ExtResource( 5 )]
+position = Vector2( 575, 269 )
+scale = Vector2( 1.2, 1.2 )
+
+[node name="TEMP_SOUNDS" type="Node" parent="."]
+
+[node name="s1" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 16 )
+
+[node name="s2" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 14 )
+
+[node name="s3" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 13 )
+
+[node name="s4" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 17 )
+
+[node name="s5" type="AudioStreamPlayer" parent="TEMP_SOUNDS"]
+stream = ExtResource( 15 )
+
+[node name="Darm" type="Node2D" parent="."]
+z_index = 2
+
+[node name="TextureProgress" type="TextureProgress" parent="Darm"]
+margin_left = 91.0
+margin_top = 1316.0
+margin_right = 591.0
+margin_bottom = 1466.0
+texture_under = ExtResource( 12 )
+texture_progress = ExtResource( 12 )
+fill_mode = 1
+tint_progress = Color( 0.792157, 0, 0, 1 )
+
+[node name="Burp_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 18 )
+autoplay = true
+
+[node name="MagnifyingGlass" type="Sprite" parent="."]
+visible = false
+position = Vector2( 238, 309 )
+rotation = 0.472553
+scale = Vector2( 0.3, 0.3 )
+texture = ExtResource( 19 )
+
+[node name="Stomach_detector" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stomach_detector"]
+position = Vector2( 546, 298 )
+shape = SubResource( 11 )
+
+[node name="Timer" type="Timer" parent="Stomach_detector"]
+wait_time = 0.5
+one_shot = true
+
+[node name="StomachCollision" type="Sprite" parent="Stomach_detector"]
+visible = false
+position = Vector2( 194, 251 )
+scale = Vector2( 0.586297, 0.586297 )
+texture = ExtResource( 20 )
+
+[node name="scaling" type="Tween" parent="."]
+
+[node name="dynamicwater" type="Node2D" parent="."]
+modulate = Color( 1, 1.1, 1, 1 )
+position = Vector2( 34, 408 )
+z_index = 3
+z_as_relative = false
+script = ExtResource( 22 )
+ALTURA = 10.0
+LARGURA = 320.0
+RESOLUCAO = 20.0
+COR = Color( 0.305882, 0.752941, 0, 0.662745 )
+TENSAO = 0.007
+AMORTECIMENTO = 0.011
+
+[node name="BearBellyOverlay" type="Sprite" parent="."]
+position = Vector2( 191, 227 )
+scale = Vector2( 0.396, 0.445 )
+z_index = 3
+z_as_relative = false
+texture = ExtResource( 23 )
+
+[node name="BearBelly" type="Sprite" parent="."]
+position = Vector2( 195, 247 )
+scale = Vector2( 0.39625, 0.444973 )
+texture = ExtResource( 21 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 170, 29, 168, 117, 48, 163, 24, 251, 31, 341, 63, 394, 154, 415, 264, 412, 335, 386, 352, 300, 357, 205, 337, 147, 256, 127, 226, 120, 220, 27, 365, 156, 362, 376, 322, 425, 155, 435, 45, 423, 10, 367, 3, 202, 25, 126, 86, 105, 146, 52 )
+
+[node name="Plate" type="StaticBody2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Sprite" type="Sprite" parent="Plate"]
+visible = false
+position = Vector2( 354, 350 )
+scale = Vector2( 0.222503, 0.170981 )
+texture = ExtResource( 11 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 192, 427 )
+z_as_relative = false
+shape = SubResource( 6 )
+one_way_collision = true
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 351, 229 )
+shape = SubResource( 7 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Plate"]
+position = Vector2( 22, 220 )
+shape = SubResource( 7 )
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2( 13, -6 )
+z_index = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 320, 76 )
+shape = SubResource( 12 )
+
+[node name="Button9Slice" type="Sprite" parent="Area2D"]
+position = Vector2( 406.626, 76.9282 )
+scale = Vector2( 1.7627, 0.772877 )
+texture = ExtResource( 24 )
+offset = Vector2( -26.0964, -2.58771 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Area2D"]
+margin_left = 240.626
+margin_top = 60.9282
+margin_right = 404.626
+margin_bottom = 91.9282
+rect_scale = Vector2( 1.8, 1.8 )
+custom_colors/default_color = Color( 0.972549, 0, 0, 1 )
+text = "RELEASE THE KRAKEN"
+
+[node name="Watermark" parent="." instance=ExtResource( 6 )]
+margin_right = 94.0
+margin_bottom = 20.0
+custom_fonts/font = SubResource( 5 )
+label_file = "res://build_info.txt"
+
+[connection signal="match_sound" from="Grid" to="SoundPlayer" method="_on_Grid_match_sound"]
+[connection signal="move_sound" from="Grid" to="SoundPlayer" method="_on_Grid_move_sound"]
+[connection signal="release_sound" from="Grid" to="SoundPlayer" method="_on_Grid_release_sound"]
+[connection signal="timeout" from="Grid/TouchTimer" to="Grid" method="_on_TouchTimer_timeout"]
+[connection signal="timeout" from="Grid/TouchTimer" to="Grid/tile_held" method="_on_TouchTimer_timeout"]
+[connection signal="timeout" from="Screens/SignTimer" to="." method="_on_SignTimer_timeout"]
+[connection signal="body_entered" from="Stomach_detector" to="Grid" method="_on_Stomach_detector_body_entered"]
+[connection signal="timeout" from="Stomach_detector/Timer" to="Grid" method="_on_Timer_timeout"]
