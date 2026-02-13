@@ -378,3 +378,15 @@ func _on_Timer_timeout():
 	belch_size += 1
 	pass # Replace with function body.
 
+
+func clear_all_pieces():
+	"""Clear all pieces from the board (for Kraken release)"""
+	print("Clearing all pieces!")
+	for i in width:
+		for j in height:
+			if board[i][j] != null:
+				board[i][j].queue_free()
+				board[i][j] = null
+	# Spawn fresh pieces
+	spawn_pieces()
+
